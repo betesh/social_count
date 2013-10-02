@@ -1,4 +1,5 @@
 require "social_count/version"
+require "social_count/facebook_user"
 
 module SocialCount
   REQUIRED_CREDENTIALS = [:twitter_consumer_key, :twitter_consumer_secret, :twitter_oauth_token, :twitter_oauth_token_secret, :fb_app_id, :fb_app_secret]
