@@ -1,29 +1,35 @@
 # SocialCount
 
-TODO: Write a gem description
+This gem is an incredibly ligh-weight wrapper for finding how many facebook friends and twitter followers someone has.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+    gem 'social_count' # In your Gemfile
 
-    gem 'social_count'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install social_count
+    $ gem install social_count # Install locally
 
 ## Usage
 
-TODO: Write usage instructions here
+1) Configure your credentials:
 
-## Contributing
+    SocialCount::Credentials = Struct.new(:twitter_consumer_key, :twitter_consumer_secret, :twitter_oauth_token, :twitter_oauth_token_secret, :fb_app_id, :fb_app_secret)
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+2) Get the Facebook friend count of any user:
+
+    SocialCount::FacebookUser.new('zuck').friend_count # Find out how many friends Mark Zuckerberg has
+
+3) Get the Twitter follower count of any user:
+
+    SocialMedia::TwitterUser.new('tsa').follower_count # Find out how many people are following the Transportation security Administration
+
+4) Check if someone is on Facebook:
+
+    orwell = SocialCount::FacebookUser.new('george_orwell')
+    orwell.valid? # False -- Not everyone is cool enough to be one Facebook
+    orwell.friend_count # nil
+
+5) Check if someone is on Twitter:
+
+    nsa = SocialCount::TwitterUser.new('no_such_agency')
+    nsa.valid? # False -- Nobody can follow the NSA
+    nsa.follower_count # nil

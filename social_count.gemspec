@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.name          = "social_count"
   spec.version       = SocialCount::VERSION
   spec.authors       = ["Isaac Betesh"]
-  spec.email         = ["ibetesh@springbig.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.email         = ["iybetesh@gmail.com"]
+  spec.description   = %q{Want to know how popular you are?  This gem helps you look up how many Facebook friends and Twitter followers you have.}
+  spec.summary       = `cat README.md`
   spec.homepage      = ""
   spec.license       = "MIT"
 
