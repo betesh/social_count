@@ -32,4 +32,8 @@ describe SocialCount::Credentials do
     SocialCount.reset_credentials
     expect{SocialCount.credentials}.to raise_error(SocialCount::Error, "You must set SocialCount.credentials before making an API call")
   end
+
+  it "can be a SocialCount::Credentials instance" do
+    expect{SocialCount.credentials = SocialCount::Credentials.new}.to_not raise_error
+  end
 end
