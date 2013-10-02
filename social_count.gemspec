@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["iybetesh@gmail.com"]
   spec.description   = %q{Want to know how popular you are?  This gem helps you look up how many Facebook friends and Twitter followers you have.}
   spec.summary       = `cat README.md`
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/betesh/social_count"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
