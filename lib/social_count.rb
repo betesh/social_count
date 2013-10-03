@@ -1,3 +1,4 @@
+require 'active_support/core_ext/object/blank'
 require "social_count/version"
 require "social_count/error"
 require "social_count/facebook_user"
@@ -20,7 +21,10 @@ module SocialCount
     end
     private
       def validate_credentials(_credentials)
-        REQUIRED_CREDENTIALS.each { |attr| raise SocialCount::Error, "SocialCount.credentials must respond to #{attr}" unless _credentials.respond_to?(attr.to_s) }
+        REQUIRED_CREDENTIALS.each do |attr|
+          raise SocialCount::Error, "SocialCount.credentials must respond to #{attr}" unless _credentials.respond_to?(attr.to_s)
+          raise SocialCount::Error, "SocialCount.credentials.#{attr} cannot be blank" if _credentials.__send__(attr.to_s).blank?
+        end
       end
   end
 end

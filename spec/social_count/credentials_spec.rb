@@ -22,11 +22,25 @@ def class_that_doesnt_respond_to(credential)
   end
 end
 
+def class_that_responds_with_x_to(credential, x)
+  Class.new(class_that_doesnt_respond_to(credential)) do
+    define_method(credential) { x }
+  end
+end
+
 describe SocialCount::Credentials do
   SocialCount::REQUIRED_CREDENTIALS.each do |credential|
     it "should require credentials to have a #{credential}" do
       credentials = class_that_doesnt_respond_to(credential)
       expect{SocialCount.credentials = credentials.new}.to raise_error(SocialCount::Error, "SocialCount.credentials must respond to #{credential}")
+    end
+    it "should not allow #{credential} to be nil" do
+      credentials = class_that_responds_with_x_to(credential, nil)
+      expect{SocialCount.credentials = credentials.new}.to raise_error(SocialCount::Error, "SocialCount.credentials.#{credential} cannot be blank")
+    end
+    it "should not allow #{credential} to be an empty string" do
+      credentials = class_that_responds_with_x_to(credential, '')
+      expect{SocialCount.credentials = credentials.new}.to raise_error(SocialCount::Error, "SocialCount.credentials.#{credential} cannot be blank")
     end
   end
 
