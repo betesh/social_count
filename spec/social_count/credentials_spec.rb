@@ -13,16 +13,25 @@ def credentials_without(attr)
   SocialCount::REQUIRED_CREDENTIALS.dup.tap { |a| a.delete(attr) }
 end
 
+def class_that_doesnt_respond_to(credential)
+  Class.new do
+    attributes = credentials_without(credential)
+    attributes.each do |a|
+      define_method(a) { '123' }
+    end
+  end
+end
+
 describe SocialCount::Credentials do
   SocialCount::REQUIRED_CREDENTIALS.each do |credential|
     it "should require credentials to have a #{credential}" do
-      credentials = Class.new do attr_reader *credentials_without(credential); end
+      credentials = class_that_doesnt_respond_to(credential)
       expect{SocialCount.credentials = credentials.new}.to raise_error(SocialCount::Error, "SocialCount.credentials must respond to #{credential}")
     end
   end
 
   it "shouldn't change state when an exception is raised" do
-    credentials = Class.new do attr_reader *credentials_without(:twitter_consumer_secret); end
+    credentials = class_that_doesnt_respond_to(:twitter_consumer_secret)
     SocialCount.reset_credentials
     expect{SocialCount.credentials = credentials.new}.to raise_error(SocialCount::Error, "SocialCount.credentials must respond to twitter_consumer_secret")
     expect(SocialCount.instance_variable_get("@credentials")).to be_nil
