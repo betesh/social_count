@@ -21,7 +21,7 @@ module SocialCount
     end
     def follower_count
       count = run_query(:subscriber)
-      count.zero? ? nil : count
+      count.to_i.zero? ? nil : count
     end
     private
       def run_query(column)

@@ -78,5 +78,8 @@ describe SocialCount::FacebookUser do
     it "should have nil friend_count" do
       non_existent_user.friend_count.should be_nil
     end
+    it "should have nil follower_count" do
+      non_existent_user.follower_count.should be_nil
+    end
   end
 end
