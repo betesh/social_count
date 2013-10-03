@@ -6,7 +6,7 @@ require "social_count/twitter_user"
 module SocialCount
   REQUIRED_CREDENTIALS = [:twitter_consumer_key, :twitter_consumer_secret, :twitter_oauth_token, :twitter_oauth_token_secret, :fb_app_id, :fb_app_secret]
   class Credentials
-    attr_reader *REQUIRED_CREDENTIALS
+    attr_accessor *REQUIRED_CREDENTIALS
   end
   class << self
     def credentials

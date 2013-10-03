@@ -43,6 +43,13 @@ describe SocialCount::Credentials do
   end
 
   it "can be a SocialCount::Credentials instance" do
-    expect{SocialCount.credentials = SocialCount::Credentials.new}.to_not raise_error
+    s = SocialCount::Credentials.new
+    s.twitter_consumer_key = "1"
+    s.twitter_consumer_secret = "1"
+    s.twitter_oauth_token = "1"
+    s.twitter_oauth_token_secret = "1"
+    s.fb_app_id = "1"
+    s.fb_app_secret = "1"
+    expect{SocialCount.credentials = s}.to_not raise_error
   end
 end
