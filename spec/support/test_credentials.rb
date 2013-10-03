@@ -6,7 +6,6 @@ class TestCredentials
   credentials_file = File.expand_path("#{__FILE__}/../credentials.rb")
   unless File.exists?(credentials_file)
     puts "Please configure your Facebook and Twitter application credentials by copying #{credentials_file}.example to #{credentials_file} and configuring the required values there appropriately."
-    puts "Then comment out the 'exit' line in #{File.expand_path(__FILE__)} before running rspec."
     exit
   end
 end
