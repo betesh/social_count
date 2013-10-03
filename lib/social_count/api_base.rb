@@ -1,9 +1,12 @@
 require 'net/http'
+require 'active_support/core_ext/object/blank'
+require 'social_count/error'
 
 module SocialCount
   class ApiBase
     attr_reader :name
     def initialize(name)
+      raise SocialCount::Error, "#{self.class}#name cannot be blank" if name.blank?
       @name = name
     end
     class << self

@@ -8,6 +8,15 @@ describe SocialCount::TwitterUser do
     @username ||= 'tsa'
   end
 
+  describe "name" do
+    it "cannot be an empty string" do
+      expect{SocialCount::TwitterUser.new('')}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+    end
+    it "cannot be nil" do
+      expect{SocialCount::TwitterUser.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+    end
+  end
+
   describe "existent user" do
     before(:each) do
       @twitter = SocialCount::TwitterUser.new(username)

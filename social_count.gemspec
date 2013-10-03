@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "activesupport"
   spec.add_dependency "fb_graph"
   spec.add_dependency "twitter_oauth", '~> 0.4.94'
 

@@ -11,6 +11,7 @@ describe SocialCount::FacebookUser do
   def access_token_did_not_match_specified_format
     @access_token_did_not_match_specified_format ||= "Facebook Access Token #{@access_token} did not match specified format"
   end
+
   describe "class methods" do
     it "should receive an access token" do
       @access_token = SocialCount::FacebookUser.access_token.split("|")
@@ -19,6 +20,17 @@ describe SocialCount::FacebookUser do
       @access_token[1].should match(/[_A-Za-z0-9]{27}/), access_token_did_not_match_specified_format
     end
   end
+
+  describe "name" do
+    it "cannot be an empty string" do
+      expect{SocialCount::TwitterUser.new('')}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+    end
+    it "cannot be nil" do
+      expect{SocialCount::TwitterUser.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+    end
+  end
+
+
   describe "user that supports following" do
     before(:all) do
       @facebook = SocialCount::FacebookUser.new(username)
@@ -46,6 +58,7 @@ describe SocialCount::FacebookUser do
       @facebook.friend_count.should be_nil
     end
   end
+
   describe "user that supports friending" do
     before(:all) do
       @facebook = SocialCount::FacebookUser.new('jose.valim')
@@ -59,6 +72,7 @@ describe SocialCount::FacebookUser do
       @facebook.follower_count.should be_nil
     end
   end
+
   describe "non-existent user" do
     def non_existent_user
       SocialCount::FacebookUser.new("george_orwell")
