@@ -1,5 +1,17 @@
 require 'spec_helper'
 
+module SocialCount
+  class TwitterUser
+    class << self
+      def reset_credentials
+        @token_hash = nil
+        @access_token = nil
+        @credentials = nil
+      end
+    end
+  end
+end
+
 describe SocialCount::TwitterUser do
   before(:all) do
     SocialCount.credentials = TestCredentials::INSTANCE
@@ -46,6 +58,22 @@ describe SocialCount::TwitterUser do
 
     it "should have nil follower_count" do
       non_existent_user.follower_count.should be_nil
+    end
+  end
+
+  describe "expired credentials" do
+    before(:all) do
+      @old_credentials = SocialCount.credentials
+      SocialCount::TwitterUser.reset_credentials
+      SocialCount.credentials = TestCredentials::EXPIRED_CREDENTIALS
+      @twitter = SocialCount::TwitterUser.new(username)
+    end
+    it "should raise an exception" do
+      expect{@twitter.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 89\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
+    end
+    after(:all) do
+      SocialCount.credentials = @old_credentials
+      SocialCount::TwitterUser.reset_credentials
     end
   end
 end

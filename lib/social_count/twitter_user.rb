@@ -13,9 +13,13 @@ module SocialCount
     end
 
     def follower_count
+      return unless valid?
       response = self.class.access_token.request(:get, follower_count_url)
-      JSON.parse(response.body)["followers_count"]
+      response = JSON.parse(response.body)
+      raise SocialCount::TwitterApiError.new("Twitter API returned the following errors: #{response["errors"]}", response["errors"].collect{|e| e["code"]}) if response["errors"]
+      response["followers_count"]
     end
+
     private
       def follower_count_url
         @follower_count_url ||= "#{API_DOMAIN}/1.1/users/show.json?screen_name=#{URI.escape(name)}"
