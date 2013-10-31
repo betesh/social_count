@@ -39,7 +39,7 @@ describe SocialCount::TwitterUser do
     end
 
     it "should get the follow count" do
-      @twitter.follower_count.should eq(12171)
+      @twitter.follower_count.should eq(12830)
     end
   end
 
@@ -69,7 +69,7 @@ describe SocialCount::TwitterUser do
       @twitter = SocialCount::TwitterUser.new(username)
     end
     it "should raise an exception" do
-      expect{@twitter.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 89\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
+      expect{@twitter.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 32\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
     end
     after(:all) do
       SocialCount.credentials = @old_credentials

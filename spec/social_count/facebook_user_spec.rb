@@ -1,5 +1,17 @@
 require 'spec_helper'
 
+module SocialCount
+  class FacebookUser
+    class << self
+      def reset_credentials
+        @access_token = nil
+        @access_url = nil
+        @credentials = nil
+      end
+    end
+  end
+end
+
 describe SocialCount::FacebookUser do
   before(:all) do
     SocialCount.credentials = TestCredentials::INSTANCE
@@ -23,10 +35,10 @@ describe SocialCount::FacebookUser do
 
   describe "name" do
     it "cannot be an empty string" do
-      expect{SocialCount::TwitterUser.new('')}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+      expect{SocialCount::FacebookUser.new('')}.to raise_error(SocialCount::Error, "SocialCount::FacebookUser#name cannot be blank")
     end
     it "cannot be nil" do
-      expect{SocialCount::TwitterUser.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+      expect{SocialCount::FacebookUser.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::FacebookUser#name cannot be blank")
     end
   end
 
@@ -52,7 +64,7 @@ describe SocialCount::FacebookUser do
     it "should get the user's follower count" do
       count = @facebook.follower_count
       count.should be_a(Fixnum)
-      count.should eq(19528198)
+      count.should eq(20384037)
     end
     it "should handle friend_count gracefully" do
       @facebook.friend_count.should be_nil
@@ -66,7 +78,7 @@ describe SocialCount::FacebookUser do
     it "should get the user's friend count" do
       count = @facebook.friend_count
       count.should be_a(Fixnum)
-      count.should eq(568)
+      count.should eq(585)
     end
     it "should handle friend_count gracefully" do
       @facebook.follower_count.should be_nil
@@ -94,6 +106,22 @@ describe SocialCount::FacebookUser do
     end
     it "should have nil follower_count" do
       non_existent_user.follower_count.should be_nil
+    end
+  end
+
+  describe "expired credentials" do
+    before(:all) do
+      @old_credentials = SocialCount.credentials
+      SocialCount::FacebookUser.reset_credentials
+      SocialCount.credentials = TestCredentials::EXPIRED_CREDENTIALS
+      @facebook = SocialCount::FacebookUser.new(username)
+    end
+    it "should raise an exception when generating the access token" do
+      expect{@facebook.follower_count}.to raise_error(SocialCount::FacebookApiError, "Code: 1\nFacebook API returned the following error: Error validating client secret.\nSee code explanations at https://developers.facebook.com/docs/reference/api/errors/")
+    end
+    after(:all) do
+      SocialCount.credentials = @old_credentials
+      SocialCount::FacebookUser.reset_credentials
     end
   end
 end

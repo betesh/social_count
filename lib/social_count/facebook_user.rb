@@ -28,7 +28,10 @@ module SocialCount
         return unless valid?
         url = "#{DOMAIN}/fql?q=#{query(column)}"
         response = self.class.get_http_response(url)
-        JSON.parse(response.body)["data"][0]["#{column}_count"]
+        response = JSON.parse(response.body)
+        data = response['data']
+        raise SocialCount::FacebookApiError.new("The social_count gem could not parse the response from the Facebook Graph API: #{response}", 0) unless data.is_a?(Array) && data[0].is_a?(Hash)
+        data[0]["#{column}_count"]
       end
       def query(column)
         "SELECT #{column}_count FROM user WHERE uid=#{id}"
@@ -36,7 +39,13 @@ module SocialCount
 
     class << self
       def access_token
-        @access_token ||= get_http_response(access_url).body.split("access_token=")[1]
+        return @access_token unless @access_token.nil?
+        response = get_http_response(access_url)
+        unless response.is_a?(Net::HTTPOK)
+          response = JSON.parse(response.body)
+          raise SocialCount::FacebookApiError.new("Facebook API returned the following error: #{response["error"]["message"]}", response["error"]["code"])
+        end
+        @access_token = response.body.split("access_token=")[1]
       end
       private
         def access_url
