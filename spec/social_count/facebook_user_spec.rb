@@ -64,7 +64,7 @@ describe SocialCount::FacebookUser do
     it "should get the user's follower count" do
       count = @facebook.follower_count
       count.should be_a(Fixnum)
-      count.should eq(20384037)
+      count.should eq(20394278)
     end
     it "should handle friend_count gracefully" do
       @facebook.friend_count.should be_nil
@@ -78,7 +78,7 @@ describe SocialCount::FacebookUser do
     it "should get the user's friend count" do
       count = @facebook.friend_count
       count.should be_a(Fixnum)
-      count.should eq(585)
+      count.should eq(586)
     end
     it "should handle friend_count gracefully" do
       @facebook.follower_count.should be_nil

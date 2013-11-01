@@ -39,7 +39,7 @@ describe SocialCount::TwitterUser do
     end
 
     it "should get the follow count" do
-      @twitter.follower_count.should eq(12830)
+      @twitter.follower_count.should eq(12872)
     end
   end
 

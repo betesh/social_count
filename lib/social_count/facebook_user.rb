@@ -30,7 +30,9 @@ module SocialCount
         response = self.class.get_http_response(url)
         response = JSON.parse(response.body)
         data = response['data']
-        raise SocialCount::FacebookApiError.new("The social_count gem could not parse the response from the Facebook Graph API: #{response}", 0) unless data.is_a?(Array) && data[0].is_a?(Hash)
+        raise SocialCount::FacebookApiError.new("The social_count gem could not parse the response from the Facebook Graph API: #{response}", 0) unless data.is_a?(Array)
+        return nil if data.empty?
+        raise SocialCount::FacebookApiError.new("The social_count gem could not parse the response from the Facebook Graph API: #{response}", 0) unless data[0].is_a?(Hash)
         data[0]["#{column}_count"]
       end
       def query(column)
