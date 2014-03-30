@@ -55,7 +55,7 @@ describe SocialCount::FacebookUser do
       user.username.should eq(username)
       user.first_name.should eq('Mark')
       user.last_name.should eq('Zuckerberg')
-      user.link.should eq("http://www.facebook.com/#{username}")
+      user.link.should eq("https://www.facebook.com/#{username}")
       user.gender.should eq('male')
     end
     it "should get the user's id" do
