@@ -16,9 +16,6 @@ describe SocialCount::TwitterUser do
   before(:all) do
     SocialCount.credentials = TestCredentials::INSTANCE
   end
-  def username
-    @username ||= 'tsa'
-  end
 
   describe "name" do
     it "cannot be an empty string" do
@@ -47,6 +44,7 @@ describe SocialCount::TwitterUser do
     end
   end
 
+  ['@tsa', 'tsa'].each do |username|
   describe "existent user" do
     before(:each) do
       @twitter = SocialCount::TwitterUser.new(username)
@@ -75,5 +73,6 @@ describe SocialCount::TwitterUser do
       SocialCount.credentials = @old_credentials
       SocialCount::TwitterUser.reset_credentials
     end
+  end
   end
 end

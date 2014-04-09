@@ -9,7 +9,8 @@ module SocialCount
 
     def valid?
       return @valid unless @valid.nil?
-      @valid = self.class.get_http_response("#{USER_DOMAIN}/#{name}").is_a?(Net::HTTPOK)
+      url ="#{USER_DOMAIN}/#{name}"
+      @valid = self.class.get_http_response(url).is_a?(Net::HTTPOK)
     end
 
     def follower_count
@@ -22,7 +23,10 @@ module SocialCount
 
     private
       def follower_count_url
-        @follower_count_url ||= "#{API_DOMAIN}/1.1/users/show.json?screen_name=#{URI.escape(name)}"
+        @follower_count_url ||= "#{API_DOMAIN}/1.1/users/show.json?screen_name=#{URI.escape(name_without_at)}"
+      end
+      def name_without_at
+        @name_without_at ||= '@' == name[0] ? name[1..-1] : name
       end
 
     class << self
