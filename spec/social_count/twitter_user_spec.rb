@@ -29,20 +29,6 @@ describe SocialCount::TwitterUser do
     end
   end
 
-  describe "existent user" do
-    before(:each) do
-      @twitter = SocialCount::TwitterUser.new(username)
-    end
-
-    it "should be valid" do
-      @twitter.valid?.should be_true
-    end
-
-    it "should get the follow count" do
-      @twitter.follower_count.should eq(12872)
-    end
-  end
-
   describe "non-existent user" do
     def non_existent_user
       SocialCount::TwitterUser.new('no_such_agency')
@@ -58,6 +44,20 @@ describe SocialCount::TwitterUser do
 
     it "should have nil follower_count" do
       non_existent_user.follower_count.should be_nil
+    end
+  end
+
+  describe "existent user" do
+    before(:each) do
+      @twitter = SocialCount::TwitterUser.new(username)
+    end
+
+    it "should be valid" do
+      @twitter.valid?.should be_true
+    end
+
+    it "should get the follow count" do
+      @twitter.follower_count.should eq(12872)
     end
   end
 
