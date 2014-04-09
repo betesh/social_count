@@ -45,34 +45,34 @@ describe SocialCount::TwitterUser do
   end
 
   ['@tsa', 'tsa'].each do |username|
-  describe "existent user" do
-    before(:each) do
-      @twitter = SocialCount::TwitterUser.new(username)
+    describe "existent user" do
+      before(:each) do
+        @twitter = SocialCount::TwitterUser.new(username)
+      end
+
+      it "should be valid" do
+        @twitter.valid?.should be_true
+      end
+
+      it "should get the follow count" do
+        @twitter.follower_count.should eq(12872)
+      end
     end
 
-    it "should be valid" do
-      @twitter.valid?.should be_true
+    describe "expired credentials" do
+      before(:all) do
+        @old_credentials = SocialCount.credentials
+        SocialCount::TwitterUser.reset_credentials
+        SocialCount.credentials = TestCredentials::EXPIRED_CREDENTIALS
+        @twitter = SocialCount::TwitterUser.new(username)
+      end
+      it "should raise an exception" do
+        expect{@twitter.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 32\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
+      end
+      after(:all) do
+        SocialCount.credentials = @old_credentials
+        SocialCount::TwitterUser.reset_credentials
+      end
     end
-
-    it "should get the follow count" do
-      @twitter.follower_count.should eq(12872)
-    end
-  end
-
-  describe "expired credentials" do
-    before(:all) do
-      @old_credentials = SocialCount.credentials
-      SocialCount::TwitterUser.reset_credentials
-      SocialCount.credentials = TestCredentials::EXPIRED_CREDENTIALS
-      @twitter = SocialCount::TwitterUser.new(username)
-    end
-    it "should raise an exception" do
-      expect{@twitter.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 32\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
-    end
-    after(:all) do
-      SocialCount.credentials = @old_credentials
-      SocialCount::TwitterUser.reset_credentials
-    end
-  end
   end
 end
