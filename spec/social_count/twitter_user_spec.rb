@@ -19,16 +19,16 @@ describe SocialCount::TwitterUser do
 
   describe "name" do
     it "cannot be an empty string" do
-      expect{SocialCount::TwitterUser.new('')}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+      expect{described_class.new('')}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
     end
     it "cannot be nil" do
-      expect{SocialCount::TwitterUser.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
+      expect{described_class.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
     end
   end
 
   describe "non-existent user" do
     def non_existent_user
-      SocialCount::TwitterUser.new('no_such_agency')
+      described_class.new('no_such_agency')
     end
 
     it "should fail gracefully" do
@@ -47,7 +47,7 @@ describe SocialCount::TwitterUser do
   ['@tsa', 'tsa'].each do |username|
     describe "existent user" do
       before(:each) do
-        @twitter = SocialCount::TwitterUser.new(username)
+        @twitter = described_class.new(username)
       end
 
       it "should be valid" do
@@ -62,16 +62,16 @@ describe SocialCount::TwitterUser do
     describe "expired credentials" do
       before(:all) do
         @old_credentials = SocialCount.credentials
-        SocialCount::TwitterUser.reset_credentials
+        described_class.reset_credentials
         SocialCount.credentials = TestCredentials::EXPIRED_CREDENTIALS
-        @twitter = SocialCount::TwitterUser.new(username)
+        @twitter = described_class.new(username)
       end
       it "should raise an exception" do
         expect{@twitter.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 32\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
       end
       after(:all) do
         SocialCount.credentials = @old_credentials
-        SocialCount::TwitterUser.reset_credentials
+        described_class.reset_credentials
       end
     end
   end

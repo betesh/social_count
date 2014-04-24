@@ -26,7 +26,7 @@ describe SocialCount::FacebookUser do
 
   describe "class methods" do
     it "should receive an access token" do
-      @access_token = SocialCount::FacebookUser.access_token.split("|")
+      @access_token = described_class.access_token.split("|")
       @access_token.count.should eq(2), access_token_did_not_match_specified_format
       @access_token[0].should eq(SocialCount.credentials.fb_app_id), access_token_did_not_match_specified_format
       @access_token[1].should match(/[_A-Za-z0-9]{27}/), access_token_did_not_match_specified_format
@@ -35,17 +35,17 @@ describe SocialCount::FacebookUser do
 
   describe "name" do
     it "cannot be an empty string" do
-      expect{SocialCount::FacebookUser.new('')}.to raise_error(SocialCount::Error, "SocialCount::FacebookUser#name cannot be blank")
+      expect{described_class.new('')}.to raise_error(SocialCount::Error, "SocialCount::FacebookUser#name cannot be blank")
     end
     it "cannot be nil" do
-      expect{SocialCount::FacebookUser.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::FacebookUser#name cannot be blank")
+      expect{described_class.new(nil)}.to raise_error(SocialCount::Error, "SocialCount::FacebookUser#name cannot be blank")
     end
   end
 
 
   describe "user that supports following" do
     before(:all) do
-      @facebook = SocialCount::FacebookUser.new(username)
+      @facebook = described_class.new(username)
     end
     it "should be valid" do
       @facebook.valid?.should be_true
@@ -73,7 +73,7 @@ describe SocialCount::FacebookUser do
 
   describe "user that supports friending" do
     before(:all) do
-      @facebook = SocialCount::FacebookUser.new('jose.valim')
+      @facebook = described_class.new('jose.valim')
     end
     it "should get the user's friend count" do
       count = @facebook.friend_count
@@ -87,7 +87,7 @@ describe SocialCount::FacebookUser do
 
   describe "non-existent user" do
     def non_existent_user
-      SocialCount::FacebookUser.new("george_orwell")
+      described_class.new("george_orwell")
     end
     it "should fail gracefully" do
       expect{non_existent_user}.to_not raise_error
@@ -112,16 +112,16 @@ describe SocialCount::FacebookUser do
   describe "expired credentials" do
     before(:all) do
       @old_credentials = SocialCount.credentials
-      SocialCount::FacebookUser.reset_credentials
+      described_class.reset_credentials
       SocialCount.credentials = TestCredentials::EXPIRED_CREDENTIALS
-      @facebook = SocialCount::FacebookUser.new(username)
+      @facebook = described_class.new(username)
     end
     it "should raise an exception when generating the access token" do
       expect{@facebook.follower_count}.to raise_error(SocialCount::FacebookApiError, "Code: 1\nFacebook API returned the following error: Error validating client secret.\nSee code explanations at https://developers.facebook.com/docs/reference/api/errors/")
     end
     after(:all) do
       SocialCount.credentials = @old_credentials
-      SocialCount::FacebookUser.reset_credentials
+      described_class.reset_credentials
     end
   end
 end
