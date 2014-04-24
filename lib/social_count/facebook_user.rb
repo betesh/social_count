@@ -3,10 +3,9 @@ require 'social_count/api_base'
 
 module SocialCount
   class FacebookUser < ApiBase
-    DOMAIN = "https://graph.facebook.com"
     def valid?
       return @valid unless @valid.nil?
-      @valid = self.class.get_http_response("#{DOMAIN}/#{name}").is_a?(Net::HTTPOK)
+      @valid = self.class.get_http_response("#{FbGraph::ROOT_URL}/#{name}").is_a?(Net::HTTPOK)
     end
     def user
       return unless valid?
@@ -26,7 +25,7 @@ module SocialCount
     private
       def run_query(column)
         return unless valid?
-        url = "#{DOMAIN}/fql?q=#{query(column)}"
+        url = "#{FbGraph::ROOT_URL}/fql?q=#{query(column)}"
         response = self.class.get_http_response(url)
         response = JSON.parse(response.body)
         data = response['data']
@@ -51,7 +50,7 @@ module SocialCount
       end
       private
         def access_url
-          @access_url ||= "#{DOMAIN}/oauth/access_token?client_id=#{credentials.fb_app_id}&client_secret=#{credentials.fb_app_secret}&grant_type=client_credentials"
+          @access_url ||= "#{FbGraph::ROOT_URL}/oauth/access_token?client_id=#{credentials.fb_app_id}&client_secret=#{credentials.fb_app_secret}&grant_type=client_credentials"
         end
     end
   end
