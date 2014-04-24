@@ -44,45 +44,27 @@ describe SocialCount::FacebookUser do
 
 
   describe "user that supports following" do
-    before(:all) do
-      @facebook = described_class.new(username)
-    end
-    it "should be valid" do
-      @facebook.valid?.should be_true
-    end
+    subject { described_class.new(username) }
+    it { should be_valid }
     it "should get user data" do
-      user = @facebook.user
+      user = subject.user
       user.username.should eq(username)
       user.first_name.should eq('Mark')
       user.last_name.should eq('Zuckerberg')
       user.link.should eq("https://www.facebook.com/#{username}")
       user.gender.should eq('male')
     end
-    it "should get the user's id" do
-      @facebook.id.should eq(4)
-    end
-    it "should get the user's follower count" do
-      count = @facebook.follower_count
-      count.should be_a(Fixnum)
-      count.should eq(20394278)
-    end
-    it "should handle friend_count gracefully" do
-      @facebook.friend_count.should be_nil
-    end
+    its(:id) { should == 4 }
+    its(:follower_count) { should be_a(Fixnum) }
+    its(:follower_count) { should == 27467193 }
+    its(:friend_count) { should be_nil }
   end
 
   describe "user that supports friending" do
-    before(:all) do
-      @facebook = described_class.new('jose.valim')
-    end
-    it "should get the user's friend count" do
-      count = @facebook.friend_count
-      count.should be_a(Fixnum)
-      count.should eq(586)
-    end
-    it "should handle friend_count gracefully" do
-      @facebook.follower_count.should be_nil
-    end
+    subject { described_class.new('jose.valim') }
+    its(:friend_count) { should be_a(Fixnum) }
+    its(:friend_count) { should == 837 }
+    its(:follower_count) { should be_nil }
   end
 
   describe "non-existent user" do
