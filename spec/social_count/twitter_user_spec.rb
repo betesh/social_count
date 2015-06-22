@@ -17,6 +17,8 @@ describe SocialCount::TwitterUser do
     SocialCount.credentials = TestCredentials::INSTANCE
   end
 
+  subject { described_class.new(username) }
+
   describe "name" do
     it "cannot be an empty string" do
       expect{described_class.new('')}.to raise_error(SocialCount::Error, "SocialCount::TwitterUser#name cannot be blank")
@@ -27,50 +29,41 @@ describe SocialCount::TwitterUser do
   end
 
   describe "non-existent user" do
-    def non_existent_user
-      described_class.new('no_such_agency')
-    end
+    let(:username) { :no_such_agency }
 
     it "should fail gracefully" do
-      expect{non_existent_user}.to_not raise_error
+      expect{subject}.not_to raise_error
     end
 
-    it "should be invalid" do
-      non_existent_user.valid?.should be_false
-    end
+    it { should_not be_valid }
 
     it "should have nil follower_count" do
-      non_existent_user.follower_count.should be_nil
+      expect(subject.follower_count).to be_nil
     end
   end
 
   ['@tsa', 'tsa'].each do |username|
-    describe "existent user" do
-      before(:each) do
-        @twitter = described_class.new(username)
-      end
+    let(:username) { username }
 
-      it "should be valid" do
-        @twitter.valid?.should be_true
-      end
+    describe "existent user" do
+      it { should be_valid }
 
       it "should get the follow count" do
-        @twitter.follower_count.should eq(12872)
+        expect(subject.follower_count).to eq(45977)
       end
     end
 
     describe "expired credentials" do
-      before(:all) do
-        @old_credentials = SocialCount.credentials
+      before(:each) do
+        allow(SocialCount).to receive(:credentials).and_return(TestCredentials::EXPIRED_CREDENTIALS)
         described_class.reset_credentials
-        SocialCount.credentials = TestCredentials::EXPIRED_CREDENTIALS
-        @twitter = described_class.new(username)
       end
+
       it "should raise an exception" do
-        expect{@twitter.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 32\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
+        expect{subject.follower_count}.to raise_error(SocialCount::TwitterApiError, "Code(s): 32\nSee code explanations at https://dev.twitter.com/docs/error-codes-responses")
       end
-      after(:all) do
-        SocialCount.credentials = @old_credentials
+
+      after(:each) do
         described_class.reset_credentials
       end
     end
